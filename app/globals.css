@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --muted: #1e293b;
+  --muted-foreground: #cbd5e1;
+  --border: #2d3748;
+  --ring: #3b82f6;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: #f8fafc;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+}
+
+.input::placeholder {
+  color: #94a3b8;
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary);
+  color: #ffffff;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.button:hover {
+  filter: brightness(110%);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.drag-item {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: move;
+  transition: all 0.2s;
+  color: #f8fafc;
+}
+
+.drag-item:hover {
+  border-color: var(--primary);
+  background-color: #243147;
+}
+
+.drag-item.dragging {
+  background-color: #243147;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.drag-handle {
+  color: #94a3b8;
+  margin-right: 0.75rem;
+  cursor: move;
+  user-select: none;
+}
+
+/* Başlıklar için özel stiller */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #f8fafc;
+}
+
+/* Alt metin için özel stiller */
+.text-muted-foreground {
+  color: #94a3b8 !important;
+}
+
+/* Beyaz arka planlı alanlar için koyu metin */
+.bg-white {
+  color: #1e293b;
+}
+
+/* Beyaz kartlar için özel stiller */
+.feature-card {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.feature-card h3 {
+  color: #1e293b;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.feature-card p {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.feature-card .icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Switch stilleri */
+[data-state="checked"] {
+  background-color: #60a5fa !important; /* Daha parlak mavi */
+}
+
+[data-state="checked"]:hover {
+  background-color: #3b82f6 !important; /* Hover durumunda biraz daha koyu */
+}
+
+/* Switch thumb (yuvarlak kısım) stilleri */
+[data-state="checked"] > span {
+  transform: translateX(1.25rem) !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Kapalı durumdaki switch stilleri */
+[data-state="unchecked"] {
+  background-color: #475569 !important; /* Daha belirgin gri */
+}
+
+[data-state="unchecked"]:hover {
+  background-color: #64748b !important; /* Hover durumunda biraz daha açık */
+}
+
+/* Switch hover efekti */
+.switch-hover {
+  transition: all 0.2s ease;
+}
+
+.switch-hover:hover {
+  opacity: 0.9;
+}
+
+/* Toast stilleri */
+.toast-custom {
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Success toast */
+.toast-custom[data-type="success"] {
+  background-color: #065f46 !important;
+  color: #ffffff !important;
+  border-color: #047857 !important;
+}
+
+/* Error toast */
+.toast-custom[data-type="error"] {
+  background-color: #991b1b !important;
+  color: #ffffff !important;
+  border-color: #b91c1c !important;
+}
+
+/* Loading toast */
+.toast-custom[data-type="loading"] {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
+}

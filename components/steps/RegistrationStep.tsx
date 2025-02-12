@@ -1,0 +1,238 @@
+"use client";
+
+import { useState } from "react";
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
+import ThankYouStep from "./ThankYouStep";
+
+interface Preference {
+  key: string;
+  label: string;
+  enabled: boolean;
+}
+
+const INITIAL_PREFERENCES: Preference[] = [
+  { key: "wikipedia_births", label: "Births in History", enabled: false },
+  { key: "wikipedia_deaths", label: "Deaths in History", enabled: false },
+  { key: "wikipedia_holidays", label: "Special Days", enabled: false },
+  { key: "numbers_api_trivia", label: "Number Facts", enabled: false },
+  { key: "numbers_api_date", label: "Date Facts", enabled: false },
+  { key: "joke_api", label: "Daily Joke", enabled: false },
+  { key: "dog_api", label: "Dog Picture", enabled: false },
+  { key: "cat_api", label: "Cat Picture", enabled: false },
+  { key: "quote_api", label: "Daily Quote", enabled: false },
+  { key: "affirmation_api", label: "Daily Affirmation", enabled: false },
+  { key: "cocktail_api", label: "Cocktail Recipe", enabled: false },
+];
+
+export default function RegistrationStep() {
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [showOtp, setShowOtp] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [preferences, setPreferences] =
+    useState<Preference[]>(INITIAL_PREFERENCES);
+
+  const handleSubmitEmail = async () => {
+    try {
+      if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        return toast.error("Please enter a valid email address");
+      }
+
+      await toast.promise(
+        fetch("http://localhost:5000/api/register/initiate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }).then(async (response) => {
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || "Something went wrong");
+          }
+          return data;
+        }),
+        {
+          loading: "Sending verification code...",
+          success: (data) => {
+            if (data.isExistingUser) {
+              setPreferences(
+                INITIAL_PREFERENCES.map((pref) => ({
+                  ...pref,
+                  enabled: data.preferences[pref.key],
+                }))
+              );
+            }
+            setShowOtp(true);
+            return "Verification code sent to your email";
+          },
+          error: (err) => err.message || "Something went wrong",
+        }
+      );
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleComplete = async () => {
+    try {
+      if (!otp) {
+        return toast.error("Please enter verification code");
+      }
+
+      const preferencesObj = INITIAL_PREFERENCES.reduce((acc, pref) => {
+        const currentPref = preferences.find((p) => p.key === pref.key);
+        return { ...acc, [pref.key]: currentPref?.enabled || false };
+      }, {});
+
+      const sectionOrder = preferences.map((pref) => pref.key);
+
+      await toast.promise(
+        fetch("http://localhost:5000/api/register/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            otp,
+            preferences: preferencesObj,
+            sectionOrder,
+          }),
+        }).then(async (response) => {
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || "Something went wrong");
+          }
+          return data;
+        }),
+        {
+          loading: "Saving your preferences...",
+          success: () => {
+            setTimeout(() => setIsCompleted(true), 1000);
+            return "Registration completed successfully";
+          },
+          error: (err) => err.message || "Something went wrong",
+        }
+      );
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const onDragEnd = (result: any) => {
+    if (!result.destination) return;
+
+    const items = Array.from(preferences);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setPreferences(items);
+  };
+
+  if (isCompleted) {
+    return <ThankYouStep />;
+  }
+
+  return (
+    <div className="space-y-8 max-w-md mx-auto">
+      <div className="space-y-6">
+        {!showOtp ? (
+          <>
+            <h2 className="text-2xl font-bold text-center">Enter your email</h2>
+            <div className="flex gap-3">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                className="input flex-1"
+              />
+              <button
+                onClick={handleSubmitEmail}
+                className="button whitespace-nowrap"
+              >
+                Continue
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-center">
+                Verify your email
+              </h2>
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="Enter OTP"
+                className="input"
+              />
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="text-xl font-semibold">
+                  Choose your preferences
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Drag and drop to reorder, toggle to enable/disable
+                </p>
+              </div>
+
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="preferences">
+                  {(provided) => (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      className="space-y-2"
+                    >
+                      {preferences.map((pref, index) => (
+                        <Draggable
+                          key={pref.key}
+                          draggableId={pref.key}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={`drag-item ${
+                                snapshot.isDragging ? "dragging" : ""
+                              }`}
+                            >
+                              <span className="flex items-center gap-3">
+                                <span className="drag-handle select-none">
+                                  ⋮⋮
+                                </span>
+                                <span>{pref.label}</span>
+                              </span>
+                              <Switch
+                                checked={pref.enabled}
+                                onCheckedChange={(checked) => {
+                                  const newPreferences = [...preferences];
+                                  newPreferences[index].enabled = checked;
+                                  setPreferences(newPreferences);
+                                }}
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </div>
+
+            <button onClick={handleComplete} className="button w-full">
+              Complete Registration
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
