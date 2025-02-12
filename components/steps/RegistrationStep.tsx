@@ -34,6 +34,7 @@ export default function RegistrationStep() {
   const [isLoading, setIsLoading] = useState(false);
   const [preferences, setPreferences] =
     useState<Preference[]>(INITIAL_PREFERENCES);
+  const [isUnsubscribing, setIsUnsubscribing] = useState(false);
 
   const handleSubmitEmail = async () => {
     try {
@@ -146,6 +147,7 @@ export default function RegistrationStep() {
           : "Registration completed successfully"
       );
       setTimeout(() => setIsCompleted(true), 1000);
+      setIsUnsubscribing(isUnsubscribing);
     } catch (error) {
       console.error("Error:", error);
       toast.error("Something went wrong. Please try again.");
@@ -165,7 +167,7 @@ export default function RegistrationStep() {
   };
 
   if (isCompleted) {
-    return <ThankYouStep />;
+    return <ThankYouStep unsubscribed={isUnsubscribing} />;
   }
 
   return (
