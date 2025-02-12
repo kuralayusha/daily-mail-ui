@@ -45,7 +45,6 @@ export default function RegistrationStep() {
       await toast.promise(
         fetch("https://api.daily.yusha.dev/api/register/initiate", {
           method: "POST",
-          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -98,7 +97,6 @@ export default function RegistrationStep() {
       await toast.promise(
         fetch("https://api.daily.yusha.dev/api/register/complete", {
           method: "POST",
-          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
