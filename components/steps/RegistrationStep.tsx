@@ -98,8 +98,9 @@ export default function RegistrationStep() {
 
       const sectionOrder = preferences.map((pref) => pref.key);
 
-      await toast.promise(
-        fetch("https://daily-mail-be.onrender.com/api/register/complete", {
+      const response = await fetch(
+        "https://daily-mail-be.onrender.com/api/register/complete",
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -110,24 +111,20 @@ export default function RegistrationStep() {
             preferences: preferencesObj,
             sectionOrder,
           }),
-        }).then(async (response) => {
-          const data = await response.json();
-          if (!response.ok) {
-            throw new Error(data.error || "Something went wrong");
-          }
-          return data;
-        }),
-        {
-          loading: "Saving your preferences...",
-          success: () => {
-            setTimeout(() => setIsCompleted(true), 1000);
-            return "Registration completed successfully";
-          },
-          error: (err) => err.message || "Something went wrong",
         }
       );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Something went wrong");
+      }
+
+      toast.success("Registration completed successfully");
+      setTimeout(() => setIsCompleted(true), 1000);
     } catch (error) {
       console.error("Error:", error);
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
