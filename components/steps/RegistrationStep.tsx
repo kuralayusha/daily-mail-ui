@@ -110,6 +110,11 @@ export default function RegistrationStep() {
         return { ...acc, [pref.key]: currentPref?.enabled || false };
       }, {});
 
+      // Tüm tercihler false ise unsubscribe flag'i ekle
+      const isUnsubscribing = Object.values(preferencesObj).every(
+        (value) => !value
+      );
+
       const sectionOrder = preferences.map((pref) => pref.key);
 
       const response = await fetch(
@@ -124,6 +129,7 @@ export default function RegistrationStep() {
             otp,
             preferences: preferencesObj,
             sectionOrder,
+            isUnsubscribing,
           }),
         }
       );
@@ -134,7 +140,11 @@ export default function RegistrationStep() {
         throw new Error(data.error || "Something went wrong");
       }
 
-      toast.success("Registration completed successfully");
+      toast.success(
+        isUnsubscribing
+          ? "Successfully unsubscribed from all preferences"
+          : "Registration completed successfully"
+      );
       setTimeout(() => setIsCompleted(true), 1000);
     } catch (error) {
       console.error("Error:", error);
