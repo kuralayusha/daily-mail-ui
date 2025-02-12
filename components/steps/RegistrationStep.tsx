@@ -42,39 +42,43 @@ export default function RegistrationStep() {
       }
 
       setIsLoading(true);
-      await toast.promise(
-        fetch("https://daily-mail-be.onrender.com/api/register/initiate", {
+      const response = await fetch(
+        "https://daily-mail-be.onrender.com/api/register/initiate",
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ email }),
-        }).then(async (response) => {
-          const data = await response.json();
-          if (!response.ok) {
-            throw new Error(data.error || "Something went wrong");
-          }
-          return data;
-        }),
-        {
-          loading: "Sending verification code...",
-          success: (data) => {
-            if (data.isExistingUser) {
-              setPreferences(
-                INITIAL_PREFERENCES.map((pref) => ({
-                  ...pref,
-                  enabled: data.preferences[pref.key],
-                }))
-              );
-            }
-            setShowOtp(true);
-            return "Verification code sent to your email";
-          },
-          error: (err) => err.message || "Something went wrong",
         }
       );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Something went wrong");
+      }
+
+      // Mevcut kullanıcı tercihleri varsa güncelle
+      if (data.isExistingUser && data.preferences) {
+        const updatedPreferences = [...INITIAL_PREFERENCES];
+
+        // Her bir tercihi kontrol et ve varsa güncelle
+        Object.keys(data.preferences).forEach((key) => {
+          const prefIndex = updatedPreferences.findIndex((p) => p.key === key);
+          if (prefIndex !== -1) {
+            updatedPreferences[prefIndex].enabled = data.preferences[key];
+          }
+        });
+
+        setPreferences(updatedPreferences);
+      }
+
+      toast.success("Verification code sent to your email");
+      setShowOtp(true);
     } catch (error) {
       console.error("Error:", error);
+      toast.error("Something went wrong.");
     } finally {
       setIsLoading(false);
     }
