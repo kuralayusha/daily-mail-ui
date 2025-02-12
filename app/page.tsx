@@ -3,6 +3,16 @@
 import { useState } from "react";
 import LandingStep from "@/components/steps/LandingStep";
 import RegistrationStep from "@/components/steps/RegistrationStep";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Daily Newsletter - Start Your Personalized Journey",
+  description:
+    "Subscribe to our daily newsletter and receive personalized content based on your interests. Choose from various topics including history, facts, quotes, and more.",
+  alternates: {
+    canonical: "https://daily-newsletter.com",
+  },
+};
 
 export default function Home() {
   const [currentStep, setCurrentStep] = useState<"landing" | "registration">(
