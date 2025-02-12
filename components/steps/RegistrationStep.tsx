@@ -133,12 +133,14 @@ export default function RegistrationStep() {
   }
 
   return (
-    <div className="space-y-8 max-w-md mx-auto">
-      <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8 max-w-md mx-auto">
+      <div className="space-y-4 sm:space-y-6">
         {!showOtp ? (
           <>
-            <h2 className="text-2xl font-bold text-center">Enter your email</h2>
-            <div className="flex gap-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-center">
+              Enter your email
+            </h2>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <input
                 type="email"
                 value={email}
@@ -155,26 +157,26 @@ export default function RegistrationStep() {
             </div>
           </>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-center">
                 Verify your email
               </h2>
               <input
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                placeholder="Enter OTP"
+                placeholder="Enter verification code"
                 className="input"
               />
             </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <h3 className="text-xl font-semibold">
+                <h3 className="text-lg sm:text-xl font-semibold">
                   Choose your preferences
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Drag and drop to reorder, toggle to enable/disable
                 </p>
               </div>

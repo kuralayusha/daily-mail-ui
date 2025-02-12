@@ -21,8 +21,9 @@ body {
 }
 
 .input {
+  @apply text-sm sm:text-base;
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.625rem 0.75rem;
   background-color: var(--card);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
@@ -41,7 +42,8 @@ body {
 }
 
 .button {
-  padding: 0.75rem 1.5rem;
+  @apply text-sm sm:text-base;
+  padding: 0.625rem 1rem;
   background-color: var(--primary);
   color: #ffffff;
   border-radius: 0.5rem;
@@ -58,10 +60,10 @@ body {
 }
 
 .drag-item {
+  @apply text-sm sm:text-base p-3 sm:p-4;
   background-color: var(--card);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
-  padding: 1rem;
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
@@ -111,51 +113,74 @@ h6 {
 
 /* Beyaz kartlar için özel stiller */
 .feature-card {
+  @apply p-3 sm:p-4;
   background-color: #ffffff;
   border-radius: 0.75rem;
-  padding: 1.5rem;
   text-align: center;
 }
 
 .feature-card h3 {
+  @apply text-base sm:text-lg;
   color: #1e293b;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .feature-card p {
+  @apply text-xs sm:text-sm;
   color: #64748b;
-  font-size: 0.875rem;
 }
 
 .feature-card .icon {
-  font-size: 2rem;
+  @apply text-2xl sm:text-3xl;
   margin-bottom: 0.75rem;
 }
 
 /* Switch stilleri */
 [data-state="checked"] {
-  background-color: #60a5fa !important; /* Daha parlak mavi */
+  background-color: #60a5fa !important;
 }
 
 [data-state="checked"]:hover {
-  background-color: #3b82f6 !important; /* Hover durumunda biraz daha koyu */
+  background-color: #3b82f6 !important;
 }
 
 /* Switch thumb (yuvarlak kısım) stilleri */
 [data-state="checked"] > span {
   transform: translateX(1.25rem) !important;
   background-color: #ffffff !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Kapalı durumdaki switch stilleri */
 [data-state="unchecked"] {
-  background-color: #475569 !important; /* Daha belirgin gri */
+  background-color: #475569 !important;
+  border: 1px solid #64748b !important;
 }
 
 [data-state="unchecked"]:hover {
-  background-color: #64748b !important; /* Hover durumunda biraz daha açık */
+  background-color: #64748b !important;
+}
+
+/* Switch thumb (yuvarlak kısım) stilleri - kapalı durum */
+[data-state="unchecked"] > span {
+  background-color: #e2e8f0 !important;
+  transform: translateX(2px) !important;
+}
+
+/* Ortak switch stilleri */
+[role="switch"] {
+  width: 42px !important;
+  height: 24px !important;
+  padding: 2px !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+/* Switch thumb ortak stilleri */
+[role="switch"] > span {
+  width: 18px !important;
+  height: 18px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.2s ease-in-out !important;
 }
 
 /* Switch hover efekti */
@@ -169,6 +194,7 @@ h6 {
 
 /* Toast stilleri */
 .toast-custom {
+  @apply p-2 sm:p-3;
   border-radius: 0.5rem !important;
   padding: 0.75rem 1rem !important;
   font-size: 0.875rem !important;
