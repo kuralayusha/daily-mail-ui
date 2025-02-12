@@ -41,7 +41,7 @@ export default function RegistrationStep() {
       }
 
       await toast.promise(
-        fetch("http://localhost:5000/api/register/initiate", {
+        fetch("https://api.daily.yusha.dev/api/register/initiate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
@@ -88,7 +88,7 @@ export default function RegistrationStep() {
       const sectionOrder = preferences.map((pref) => pref.key);
 
       await toast.promise(
-        fetch("http://localhost:5000/api/register/complete", {
+        fetch("https://api.daily.yusha.dev/api/register/complete", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
