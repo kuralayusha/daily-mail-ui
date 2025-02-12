@@ -61,17 +61,31 @@ export default function RegistrationStep() {
 
       // Mevcut kullanıcı tercihleri varsa güncelle
       if (data.isExistingUser && data.preferences) {
-        const updatedPreferences = [...INITIAL_PREFERENCES];
+        // Önce section_order'a göre sıralanmış yeni bir preferences array'i oluştur
+        const orderedPreferences = data.preferences.section_order.map(
+          (key: string) => {
+            const initialPref = INITIAL_PREFERENCES.find(
+              (p: Preference) => p.key === key
+            );
+            return {
+              ...initialPref,
+              enabled: data.preferences[key] || false,
+            };
+          }
+        );
 
-        // Her bir tercihi kontrol et ve varsa güncelle
-        Object.keys(data.preferences).forEach((key) => {
-          const prefIndex = updatedPreferences.findIndex((p) => p.key === key);
-          if (prefIndex !== -1) {
-            updatedPreferences[prefIndex].enabled = data.preferences[key];
+        // Eğer INITIAL_PREFERENCES'da olup section_order'da olmayan itemler varsa
+        // onları da sona ekle
+        INITIAL_PREFERENCES.forEach((pref: Preference) => {
+          if (!orderedPreferences.find((p: Preference) => p.key === pref.key)) {
+            orderedPreferences.push({
+              ...pref,
+              enabled: data.preferences[pref.key] || false,
+            });
           }
         });
 
-        setPreferences(updatedPreferences);
+        setPreferences(orderedPreferences);
       }
 
       toast.success("Verification code sent to your email");
