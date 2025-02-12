@@ -31,6 +31,7 @@ export default function RegistrationStep() {
   const [otp, setOtp] = useState("");
   const [showOtp, setShowOtp] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [preferences, setPreferences] =
     useState<Preference[]>(INITIAL_PREFERENCES);
 
@@ -40,6 +41,7 @@ export default function RegistrationStep() {
         return toast.error("Please enter a valid email address");
       }
 
+      setIsLoading(true);
       await toast.promise(
         fetch("https://api.daily.yusha.dev/api/register/initiate", {
           method: "POST",
@@ -71,6 +73,8 @@ export default function RegistrationStep() {
       );
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -80,6 +84,7 @@ export default function RegistrationStep() {
         return toast.error("Please enter verification code");
       }
 
+      setIsLoading(true);
       const preferencesObj = INITIAL_PREFERENCES.reduce((acc, pref) => {
         const currentPref = preferences.find((p) => p.key === pref.key);
         return { ...acc, [pref.key]: currentPref?.enabled || false };
@@ -115,6 +120,8 @@ export default function RegistrationStep() {
       );
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -147,12 +154,14 @@ export default function RegistrationStep() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 className="input flex-1"
+                disabled={isLoading}
               />
               <button
                 onClick={handleSubmitEmail}
                 className="button whitespace-nowrap"
+                disabled={isLoading}
               >
-                Continue
+                {isLoading ? "Sending..." : "Continue"}
               </button>
             </div>
           </>
@@ -229,8 +238,12 @@ export default function RegistrationStep() {
               </DragDropContext>
             </div>
 
-            <button onClick={handleComplete} className="button w-full">
-              Complete Registration
+            <button
+              onClick={handleComplete}
+              className="button w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? "Completing..." : "Complete Registration"}
             </button>
           </div>
         )}
