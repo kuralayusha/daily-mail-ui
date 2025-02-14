@@ -39,7 +39,7 @@ export default function RegistrationStep() {
   const handleSubmitEmail = async () => {
     try {
       if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-        return toast.error("Please enter a valid email address");
+        return toast.error("Lütfen geçerli bir e-posta adresi giriniz");
       }
 
       setIsLoading(true);
@@ -57,12 +57,33 @@ export default function RegistrationStep() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Something went wrong");
+        // Hata koduna göre özel mesajlar göster
+        switch (data.errorCode) {
+          case "INVALID_EMAIL":
+            toast.error(
+              "Bu e-posta adresi geçersiz veya ulaşılamıyor. Lütfen kontrol ediniz."
+            );
+            break;
+          case "NETWORK_ERROR":
+            toast.error(
+              "Bağlantı hatası oluştu. Lütfen internet bağlantınızı kontrol edip tekrar deneyiniz."
+            );
+            break;
+          case "SYSTEM_ERROR":
+            toast.error(
+              "Sistemde bir hata oluştu. Lütfen daha sonra tekrar deneyiniz."
+            );
+            break;
+          default:
+            toast.error(
+              data.error || "Bir hata oluştu. Lütfen tekrar deneyiniz."
+            );
+        }
+        return;
       }
 
       // Mevcut kullanıcı tercihleri varsa güncelle
       if (data.isExistingUser && data.preferences) {
-        // Önce section_order'a göre sıralanmış yeni bir preferences array'i oluştur
         const orderedPreferences = data.preferences.section_order.map(
           (key: string) => {
             const initialPref = INITIAL_PREFERENCES.find(
@@ -75,8 +96,6 @@ export default function RegistrationStep() {
           }
         );
 
-        // Eğer INITIAL_PREFERENCES'da olup section_order'da olmayan itemler varsa
-        // onları da sona ekle
         INITIAL_PREFERENCES.forEach((pref: Preference) => {
           if (!orderedPreferences.find((p: Preference) => p.key === pref.key)) {
             orderedPreferences.push({
@@ -89,11 +108,15 @@ export default function RegistrationStep() {
         setPreferences(orderedPreferences);
       }
 
-      toast.success("Verification code sent to your email");
+      toast.success(
+        data.message || "Doğrulama kodu e-posta adresinize gönderildi"
+      );
       setShowOtp(true);
     } catch (error) {
-      console.error("Error:", error);
-      toast.error("Something went wrong.");
+      console.error("Hata:", error);
+      toast.error(
+        "Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyiniz."
+      );
     } finally {
       setIsLoading(false);
     }
