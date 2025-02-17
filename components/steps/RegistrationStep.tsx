@@ -225,13 +225,10 @@ export default function RegistrationStep() {
               <h2 className="text-xl sm:text-2xl font-bold text-center">
                 Verify your email
               </h2>
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                placeholder="Enter verification code"
-                className="input"
-              />
+              {/* small email only read */}
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                {email}
+              </p>
             </div>
 
             <div className="space-y-4">
@@ -291,6 +288,14 @@ export default function RegistrationStep() {
                 </Droppable>
               </DragDropContext>
             </div>
+
+            <input
+              type="text"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              placeholder="Enter verification code"
+              className="input"
+            />
 
             <button
               onClick={handleComplete}
