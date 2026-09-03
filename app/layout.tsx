@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "Daily Newsletter - Personalized Content Delivery",
     description:
       "Get your daily dose of curated content including historical events, fun facts, quotes, jokes, and more.",
-    url: "https://daily-newsletter.com",
+    url: "https://daily.yusha.dev",
     siteName: "Daily Newsletter",
     type: "website",
   },

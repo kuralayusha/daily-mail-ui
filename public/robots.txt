@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /register
 
-Sitemap: https://daily-newsletter.com/sitemap.xml 
+Sitemap: https://daily.yusha.dev/sitemap.xml 
